@@ -1,0 +1,414 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   توکن‌های تم — پالت شیشه‌ای بنفش، منتقل‌شده از نسخهٔ یک
+   ========================================================================== */
+:root {
+  --bg-1: #efeef5;
+  --bg-2: #e7e6f1;
+  --bg-3: #eceaf4;
+  --glow-1: #ffffff;
+  --glow-2: #e9e4fb;
+
+  --ink: #16161d;
+  --ink-2: #3d3d4a;
+  --muted: #65657a;
+
+  --line: rgba(255, 255, 255, 0.65);
+  --line-2: rgba(120, 110, 160, 0.14);
+
+  --violet: #6150d6;
+  --violet-2: #8b6ff5;
+  --violet-soft: #efeafe;
+
+  --glass: rgba(255, 255, 255, 0.55);
+  --glass-soft: rgba(255, 255, 255, 0.62);
+  --field: rgba(255, 255, 255, 0.75);
+
+  --btn-solid: #14141b;
+  --btn-solid-ink: #ffffff;
+  --btn-solid-hover: #26262f;
+
+  --shadow: 0 10px 40px rgba(88, 76, 140, 0.1);
+  --shadow-sm: 0 4px 18px rgba(88, 76, 140, 0.08);
+  --shadow-lift: 0 14px 34px rgba(88, 76, 140, 0.15);
+
+  --orb-1: radial-gradient(circle at 35% 35%, #ffffff, #d9cffb 60%, #c4b5fd);
+  --orb-2: radial-gradient(circle at 40% 30%, #ffffff, #e6e2f7 55%, #cfc6f4);
+  --orb-3: radial-gradient(circle at 40% 40%, #ffffff, #ded7fb 60%, #bfb0f8);
+  --orb-opacity: 0.55;
+
+  --success: #0f7a52;
+  --danger: #b4253d;
+  --warning: #8a5a00;
+}
+
+[data-theme="dark"] {
+  --bg-1: #0c0c12;
+  --bg-2: #101019;
+  --bg-3: #0d0d14;
+  --glow-1: #1b1b2b;
+  --glow-2: #191430;
+
+  --ink: #f2f2f7;
+  --ink-2: #c8c8d6;
+  --muted: #9d9db0;
+
+  --line: rgba(255, 255, 255, 0.09);
+  --line-2: rgba(255, 255, 255, 0.1);
+
+  --violet: #a78bfa;
+  --violet-2: #c4b5fd;
+  --violet-soft: rgba(167, 139, 250, 0.14);
+
+  --glass: rgba(255, 255, 255, 0.045);
+  --glass-soft: rgba(255, 255, 255, 0.055);
+  --field: rgba(255, 255, 255, 0.05);
+
+  --btn-solid: #f2f2f7;
+  --btn-solid-ink: #12121a;
+  --btn-solid-hover: #ffffff;
+
+  --shadow: 0 12px 44px rgba(0, 0, 0, 0.45);
+  --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --shadow-lift: 0 16px 38px rgba(0, 0, 0, 0.5);
+
+  --orb-1: radial-gradient(circle at 35% 35%, #4c3f8f, #2a2350 60%, #151228);
+  --orb-2: radial-gradient(circle at 40% 30%, #3a3170, #231e45 55%, #13111f);
+  --orb-3: radial-gradient(circle at 40% 40%, #4a3d8c, #271f4e 60%, #14111f);
+  --orb-opacity: 0.42;
+
+  --success: #4ade80;
+  --danger: #fb7185;
+  --warning: #fbbf24;
+}
+
+/* در اختیار Tailwind */
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-brand: var(--violet);
+  --color-brand-2: var(--violet-2);
+  --color-brand-soft: var(--violet-soft);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-glass: var(--glass);
+  --color-glass-soft: var(--glass-soft);
+  --color-field: var(--field);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+
+  --font-sans: var(--font-vazir), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-lg: 26px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+
+  --shadow-glass: var(--shadow);
+  --shadow-glass-sm: var(--shadow-sm);
+  --shadow-glass-lift: var(--shadow-lift);
+
+  --breakpoint-xs: 26rem;
+}
+
+/* ==========================================================================
+   پایه
+   ========================================================================== */
+@layer base {
+  * {
+    min-width: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6.5rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    color: var(--ink);
+    background:
+      radial-gradient(1100px 600px at 88% -5%, var(--glow-1) 0%, transparent 60%),
+      radial-gradient(900px 700px at 0% 8%, var(--glow-2) 0%, transparent 65%),
+      linear-gradient(170deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
+    background-attachment: fixed;
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* حلقهٔ فوکوس یکدست و واضح برای پیمایش با کیبورد */
+  :focus-visible {
+    outline: 2px solid var(--violet);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background: var(--violet);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--violet) 45%, transparent);
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ==========================================================================
+   کامپوننت‌های تکرارشونده
+   ========================================================================== */
+@layer components {
+  .glass {
+    background: var(--glass);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    box-shadow: var(--shadow);
+  }
+
+  .glass-soft {
+    background: var(--glass-soft);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(14px) saturate(150%);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .gradient-text {
+    background: linear-gradient(95deg, var(--violet), var(--violet-2) 55%, var(--violet));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .panel {
+    border-radius: var(--radius-lg);
+    padding: clamp(1.25rem, 4vw, 2.75rem);
+  }
+
+  /* ناحیهٔ متن مقاله */
+  .prose-fa {
+    line-height: 2;
+    color: var(--ink-2);
+  }
+  .prose-fa > * + * {
+    margin-top: 1.1em;
+  }
+  .prose-fa h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-top: 2.2em;
+    scroll-margin-top: 7rem;
+  }
+  .prose-fa h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-top: 1.8em;
+    scroll-margin-top: 7rem;
+  }
+  .prose-fa a {
+    color: var(--violet);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .prose-fa ul,
+  .prose-fa ol {
+    padding-inline-start: 1.4rem;
+  }
+  .prose-fa ul {
+    list-style: disc;
+  }
+  .prose-fa ol {
+    list-style: decimal;
+  }
+  .prose-fa li + li {
+    margin-top: 0.5em;
+  }
+  .prose-fa strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .prose-fa blockquote {
+    border-inline-start: 3px solid var(--violet);
+    padding-inline-start: 1rem;
+    color: var(--muted);
+  }
+  .prose-fa code {
+    direction: ltr;
+    unicode-bidi: embed;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.875em;
+    background: var(--violet-soft);
+    color: var(--violet);
+    padding: 0.15em 0.45em;
+    border-radius: 6px;
+  }
+  .prose-fa pre {
+    direction: ltr;
+    text-align: left;
+    overflow-x: auto;
+    background: color-mix(in oklab, var(--ink) 92%, transparent);
+    color: #f4f4f8;
+    padding: 1rem 1.15rem;
+    border-radius: var(--radius-sm);
+    line-height: 1.7;
+  }
+  .prose-fa pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    font-size: 0.85em;
+  }
+  .prose-fa img {
+    border-radius: var(--radius-sm);
+  }
+  .prose-fa table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.925rem;
+    display: block;
+    overflow-x: auto;
+  }
+  .prose-fa th,
+  .prose-fa td {
+    border: 1px solid var(--line-2);
+    padding: 0.6rem 0.8rem;
+    text-align: start;
+  }
+  .prose-fa th {
+    background: var(--violet-soft);
+    color: var(--ink);
+    font-weight: 700;
+  }
+}
+
+/* ==========================================================================
+   انیمیشن‌ها
+   ========================================================================== */
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes marquee-shift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(50%);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--violet) 55%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@keyframes skeleton-fade {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+
+.animate-float {
+  animation: float-y 6s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+
+.marquee-track {
+  animation: marquee-shift var(--speed, 46s) linear infinite;
+}
+.marquee-track[data-dir="reverse"] {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+.animate-skeleton {
+  animation: skeleton-fade 1.4s ease-in-out infinite;
+}
+
+/* ظاهرشدن تدریجی هنگام اسکرول
+   محتوا به‌طور پیش‌فرض دیده می‌شود؛ فقط وقتی جاوااسکریپت فعال باشد
+   (کلاس js-reveal روی html) پنهان می‌شود و بعد با اسکرول ظاهر می‌شود.
+   این‌طور نه با جاوااسکریپت خاموش محتوا گم می‌شود، نه تا هیدریشن سفید می‌ماند. */
+.js-reveal .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.js-reveal .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ==========================================================================
+   احترام به کاهش حرکت — همهٔ انیمیشن‌ها خاموش می‌شوند
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .js-reveal .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+}
