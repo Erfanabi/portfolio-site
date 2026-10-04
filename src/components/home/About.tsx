@@ -1,6 +1,6 @@
-import { about } from '@/lib/site';
-import { Eyebrow, Panel, SectionTitle } from '@/components/ui';
-import { Reveal } from '@/components/Reveal';
+import { about } from "@/lib/site";
+import { Eyebrow, Panel, SectionTitle } from "@/components/ui";
+import { Reveal } from "@/components/Reveal";
 
 export function About() {
   return (
@@ -11,9 +11,12 @@ export function About() {
           <SectionTitle>مهندسی با دقت، ساختن با هدف</SectionTitle>
 
           {/* روایت اصلی */}
-          <div className="mt-4 max-w-[70ch]">
+          <div className="mt-4">
             {about.intro.map((para) => (
-              <p key={para} className="mt-3 text-[0.95rem] leading-8 text-ink-2 first:mt-0">
+              <p
+                key={para}
+                className="mt-3 text-[0.95rem] leading-8 text-ink-2 first:mt-0"
+              >
                 {para}
               </p>
             ))}
