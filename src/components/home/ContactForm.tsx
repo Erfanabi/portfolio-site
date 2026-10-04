@@ -20,6 +20,7 @@ export function ContactForm() {
   const ids = {
     name: `${uid}-name`,
     email: `${uid}-email`,
+    phone: `${uid}-phone`,
     topic: `${uid}-topic`,
     message: `${uid}-message`,
   };
@@ -108,6 +109,23 @@ export function ContactForm() {
             className={cx(field, 'text-start')}
           />
         </div>
+      </div>
+
+      <div>
+        <label htmlFor={ids.phone} className="mb-1.5 block text-[0.78rem] font-semibold text-ink-2">
+          شمارهٔ تلفن <span className="font-normal text-muted">(اختیاری)</span>
+        </label>
+        <input
+          id={ids.phone}
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          maxLength={25}
+          dir="ltr"
+          placeholder="۰۹۱۲۳۴۵۶۷۸۹"
+          className={cx(field, 'text-start')}
+        />
       </div>
 
       <div>

@@ -76,7 +76,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: firstError(parsed.error) }, { status: 400 });
   }
 
-  const { name, email, topic, message, website } = parsed.data;
+  const { name, email, phone, topic, message, website } = parsed.data;
 
   /* تلهٔ ربات پر شده است — پاسخ موفق می‌دهیم تا ربات متوجه نشود */
   if (website) return NextResponse.json({ ok: true });
@@ -86,6 +86,7 @@ export async function POST(req: Request) {
       data: {
         name,
         email,
+        phone: phone || null,
         topic,
         body: message,
         ip,
@@ -112,6 +113,7 @@ export async function POST(req: Request) {
       '',
       `نام: ${name}`,
       `ایمیل: ${email}`,
+      ...(phone ? [`تلفن: ${phone}`] : []),
       `موضوع: ${topic}`,
       '',
       'پیام:',

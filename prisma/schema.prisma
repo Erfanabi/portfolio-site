@@ -36,6 +36,7 @@ model Message {
   id        String   @id @default(cuid())
   name      String
   email     String
+  phone     String?
   topic     String
   body      String
   ip        String?

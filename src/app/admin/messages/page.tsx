@@ -102,6 +102,15 @@ export default async function AdminMessagesPage({
                     >
                       {m.email}
                     </a>
+                    {m.phone && (
+                      <a
+                        href={`tel:${m.phone}`}
+                        dir="ltr"
+                        className="num font-semibold text-brand hover:underline"
+                      >
+                        {faNum(m.phone)}
+                      </a>
+                    )}
                     <span className="num">{faDateTime(m.createdAt)}</span>
                   </p>
                 </div>
