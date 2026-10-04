@@ -18,8 +18,8 @@ export default function NotFound() {
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               <ButtonLink href="/">صفحهٔ اصلی</ButtonLink>
-              <ButtonLink href="/projects" variant="light">نمونه‌کارها</ButtonLink>
-              <ButtonLink href="/blog" variant="light">بلاگ</ButtonLink>
+              <ButtonLink href="/#projects" variant="light">نمونه‌کارها</ButtonLink>
+              <ButtonLink href="/#contact" variant="light">تماس</ButtonLink>
             </div>
           </Panel>
         </div>

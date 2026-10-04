@@ -43,22 +43,6 @@ export function ButtonLink({
   return <Link className={cx(base, sizes[size], variants[variant], className)} {...rest} />;
 }
 
-export function ExternalButtonLink({
-  variant = 'light',
-  size = 'md',
-  className,
-  ...rest
-}: ComponentProps<'a'> & ButtonStyle) {
-  return (
-    <a
-      target="_blank"
-      rel="noopener noreferrer"
-      className={cx(base, sizes[size], variants[variant], className)}
-      {...rest}
-    />
-  );
-}
-
 /** فلشی که در RTL به چپ و در LTR به راست می‌رود */
 export function Arrow({ className }: { className?: string }) {
   return (
@@ -108,19 +92,6 @@ export function Panel({
     <div id={id} className={cx('glass panel', className)}>
       {children}
     </div>
-  );
-}
-
-export function Tag({ children, className }: { children: ReactNode; className?: string }) {
-  return (
-    <span
-      className={cx(
-        'inline-flex items-center rounded-full border border-line-2 bg-brand-soft/60 px-2.5 py-1 text-[0.7rem] font-semibold text-brand',
-        className
-      )}
-    >
-      {children}
-    </span>
   );
 }
 

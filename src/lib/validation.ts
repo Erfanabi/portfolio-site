@@ -26,19 +26,6 @@ const slugField = z
   .max(90)
   .regex(/^[\p{L}\p{N}-]+$/u, 'نشانی فقط می‌تواند حرف، رقم و خط تیره داشته باشد.');
 
-export const postSchema = z.object({
-  title: z.string().trim().min(3, 'عنوان الزامی است.').max(160),
-  slug: slugField,
-  excerpt: z.string().trim().min(10, 'چکیده الزامی است.').max(400),
-  content: z.string().trim().min(20, 'متن مقاله الزامی است.'),
-  coverImage: z.string().trim().max(500).optional().or(z.literal('')),
-  tags: z.string().trim().max(200).optional().or(z.literal('')),
-  published: z.boolean().optional().default(false),
-  featured: z.boolean().optional().default(false),
-});
-
-export type PostInput = z.infer<typeof postSchema>;
-
 export const projectSchema = z.object({
   title: z.string().trim().min(3, 'عنوان الزامی است.').max(160),
   slug: slugField,

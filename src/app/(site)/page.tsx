@@ -1,21 +1,17 @@
 import { Hero } from '@/components/home/Hero';
-import { About, Services } from '@/components/home/AboutServices';
-import { Automation } from '@/components/home/Automation';
-import { Tech } from '@/components/home/Tech';
-import { Education, Impact, Timeline } from '@/components/home/Timeline';
+import { About } from '@/components/home/About';
 import { Contact } from '@/components/home/Contact';
 import { Reveal } from '@/components/Reveal';
-import { Arrow, ButtonLink, Eyebrow, Panel, SectionTitle } from '@/components/ui';
-import { PostCard } from '@/components/PostCard';
+import { Eyebrow, Panel, SectionTitle } from '@/components/ui';
 import { ProjectCard } from '@/components/ProjectCard';
-import { getFeaturedPosts, getFeaturedProjects } from '@/lib/queries';
+import { getFeaturedProjects } from '@/lib/queries';
 import { site } from '@/lib/site';
 
-/* صفحهٔ اصلی هر ساعت بازسازی می‌شود، پس مقالهٔ تازه خودش ظاهر می‌شود */
+/* صفحهٔ اصلی هر ساعت بازسازی می‌شود، پس نمونه‌کار تازه خودش ظاهر می‌شود */
 export const revalidate = 3600;
 
 export default async function HomePage() {
-  const [projects, posts] = await Promise.all([getFeaturedProjects(3), getFeaturedPosts(3)]);
+  const projects = await getFeaturedProjects(6);
 
   /* داده‌های ساخت‌یافته برای گوگل */
   const personJsonLd = {
@@ -35,25 +31,16 @@ export default async function HomePage() {
       <main id="main">
         <Hero />
         <About />
-        <Services />
-        <Automation />
 
-        {/* نمونه‌کارهای شاخص */}
+        {/* نمونه‌کارها — کارت‌ها به سایت واقعی لینک می‌شوند */}
         {projects.length > 0 && (
-          <section className="px-4 py-8 sm:px-6">
+          <section id="projects" className="scroll-mt-28 px-4 py-6 sm:px-6">
             <Reveal className="mx-auto max-w-[1140px]">
               <Panel>
-                <div className="flex flex-wrap items-end justify-between gap-4">
-                  <div>
-                    <Eyebrow>کارهای منتخب</Eyebrow>
-                    <SectionTitle>نمونه‌کارها</SectionTitle>
-                  </div>
-                  <ButtonLink href="/projects" variant="light" size="sm">
-                    همهٔ نمونه‌کارها <Arrow />
-                  </ButtonLink>
-                </div>
+                <Eyebrow>کارهای منتخب</Eyebrow>
+                <SectionTitle>نمونه‌کارها</SectionTitle>
 
-                <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {projects.map((p) => (
                     <ProjectCard key={p.slug} project={p} />
                   ))}
@@ -63,36 +50,6 @@ export default async function HomePage() {
           </section>
         )}
 
-        <Tech />
-        <Timeline />
-        <Impact />
-
-        {/* تازه‌های بلاگ */}
-        {posts.length > 0 && (
-          <section className="px-4 py-8 sm:px-6">
-            <Reveal className="mx-auto max-w-[1140px]">
-              <Panel>
-                <div className="flex flex-wrap items-end justify-between gap-4">
-                  <div>
-                    <Eyebrow>یادداشت‌ها</Eyebrow>
-                    <SectionTitle>تازه‌های بلاگ</SectionTitle>
-                  </div>
-                  <ButtonLink href="/blog" variant="light" size="sm">
-                    همهٔ مقاله‌ها <Arrow />
-                  </ButtonLink>
-                </div>
-
-                <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {posts.map((p) => (
-                    <PostCard key={p.slug} post={p} />
-                  ))}
-                </div>
-              </Panel>
-            </Reveal>
-          </section>
-        )}
-
-        <Education />
         <Contact />
       </main>
 

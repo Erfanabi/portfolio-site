@@ -1,8 +1,5 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { Badge, Tag } from '@/components/ui';
+import { Badge } from '@/components/ui';
 import { categoryLabel } from '@/lib/site';
-import { parseList } from '@/lib/utils';
 
 type ProjectCardData = {
   slug: string;
@@ -12,64 +9,44 @@ type ProjectCardData = {
   category: string;
   stack: string;
   year?: string | null;
-  client?: string | null;
-  featured?: boolean;
+  liveUrl?: string | null;
+  repoUrl?: string | null;
 };
 
 export function ProjectCard({ project }: { project: ProjectCardData }) {
-  const stack = parseList(project.stack).slice(0, 4);
+  const href = project.liveUrl || project.repoUrl || null;
 
   return (
-    <article className="glass-soft group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-md)] transition-all duration-300 hover:-translate-y-1 hover:border-brand/35 focus-within:border-brand/50">
-      {project.coverImage ? (
-        <div className="relative aspect-[16/10] overflow-hidden bg-brand-soft">
-          <Image
-            src={project.coverImage}
-            alt=""
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
-            className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-          />
-        </div>
-      ) : (
-        <div
-          aria-hidden
-          className="grid aspect-[16/10] place-items-center bg-gradient-to-br from-brand-soft to-transparent text-3xl text-brand/40"
-        >
-          ◫
-        </div>
-      )}
+    <article className="glass-soft group relative flex h-full flex-col gap-2 rounded-[var(--radius-md)] p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/35 focus-within:border-brand/50">
+      <div className="flex items-center gap-2">
+        <Badge tone="brand">{categoryLabel(project.category)}</Badge>
+        {project.year && <span className="num text-[0.7rem] text-muted">{project.year}</span>}
+      </div>
 
-      <div className="flex flex-1 flex-col p-5">
-        <div className="mb-3 flex flex-wrap items-center gap-2">
-          <Badge tone="brand">{categoryLabel(project.category)}</Badge>
-          {project.featured && <Badge tone="warning">شاخص</Badge>}
-          {project.year && <span className="num text-[0.7rem] text-muted">{project.year}</span>}
-        </div>
-
-        <h3 className="text-[1rem] font-bold leading-7 text-ink">
-          <Link href={`/projects/${project.slug}`} className="transition-colors hover:text-brand">
+      <h3 className="text-[0.95rem] font-bold leading-6 text-ink">
+        {href ? (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-brand"
+          >
             <span className="absolute inset-0 z-10" aria-hidden />
             {project.title}
-          </Link>
-        </h3>
-
-        {project.client && (
-          <p className="mt-1 text-[0.75rem] text-muted">کارفرما: {project.client}</p>
+            <span className="sr-only"> — باز کردن در زبانهٔ تازه</span>
+          </a>
+        ) : (
+          project.title
         )}
+      </h3>
 
-        <p className="mt-2.5 line-clamp-3 text-[0.85rem] leading-7 text-muted">
-          {project.summary}
-        </p>
+      <p className="line-clamp-2 text-[0.8rem] leading-6 text-muted">{project.summary}</p>
 
-        {stack.length > 0 && (
-          <ul className="mt-auto flex flex-wrap gap-1.5 pt-4">
-            {stack.map((item) => (
-              <li key={item}>
-                <Tag>{item}</Tag>
-              </li>
-            ))}
-          </ul>
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">
+        {href && (
+          <span className="text-[0.72rem] font-semibold text-brand">
+            مشاهدهٔ سایت <span aria-hidden>↗</span>
+          </span>
         )}
       </div>
     </article>

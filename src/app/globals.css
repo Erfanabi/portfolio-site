@@ -197,7 +197,7 @@
 
   .panel {
     border-radius: var(--radius-lg);
-    padding: clamp(1.25rem, 4vw, 2.75rem);
+    padding: clamp(1.1rem, 3vw, 2rem);
   }
 
   /* ناحیهٔ متن مقاله */

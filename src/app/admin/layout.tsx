@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { AdminShell } from '@/components/admin/AdminShell';
 
 export const metadata: Metadata = {
-  title: { default: 'پنل مدیریت', template: '%s | پنل مدیریت' },
+  title: { default: 'پیام‌ها', template: '%s | پنل' },
   robots: { index: false, follow: false },
 };
 

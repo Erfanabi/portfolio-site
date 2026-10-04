@@ -9,7 +9,7 @@ import { ButtonLink } from '@/components/ui';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 /* شناسهٔ بخش‌های صفحهٔ اصلی، برای نشانه‌گذاری لینک فعال هنگام اسکرول */
-const HOME_SECTIONS = ['about', 'services', 'automation', 'work', 'contact'];
+const HOME_SECTIONS = ['about', 'projects', 'contact'];
 
 export function SiteHeader() {
   const pathname = usePathname();

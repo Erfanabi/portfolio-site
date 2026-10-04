@@ -11,8 +11,8 @@ const floatTech = [
 
 export function Hero() {
   return (
-    <section id="home" className="px-4 pb-10 pt-28 sm:px-6 sm:pt-32">
-      <div className="mx-auto grid max-w-[1140px] items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+    <section id="home" className="px-4 pb-6 pt-24 sm:px-6 sm:pt-28">
+      <div className="mx-auto grid max-w-[1140px] items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
         <div>
           <p className="mb-2 text-sm font-semibold text-brand">سلام، من</p>
           <h1 className="text-[clamp(2.2rem,7vw,3.4rem)] font-extrabold leading-[1.15] text-ink">
@@ -28,7 +28,7 @@ export function Hero() {
           </p>
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <ButtonLink href="/projects" variant="dark" size="lg">
+            <ButtonLink href="/#projects" variant="dark" size="lg">
               مشاهدهٔ نمونه‌کارها <Arrow />
             </ButtonLink>
             <ButtonLink href={site.resume} variant="light" size="lg" download prefetch={false}>
@@ -36,7 +36,7 @@ export function Hero() {
             </ButtonLink>
           </div>
 
-          <p className="mt-9 text-xs font-semibold text-muted">همکاری داشته‌ام با</p>
+          <p className="mt-7 text-xs font-semibold text-muted">همکاری داشته‌ام با</p>
           <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
             {trustedBy.map((co) => (
               <li key={co} className="text-[0.82rem] font-semibold text-ink-2/70">

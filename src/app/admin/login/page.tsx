@@ -36,7 +36,7 @@ export default async function LoginPage({
           </span>
           <h1 className="mt-4 text-xl font-extrabold text-ink">ورود به پنل مدیریت</h1>
           <p className="mt-2 text-[0.82rem] text-muted">
-            برای مدیریت مقاله‌ها، نمونه‌کارها و پیام‌ها وارد شوید.
+            برای دیدن پیام‌های فرم تماس وارد شوید.
           </p>
         </div>
 

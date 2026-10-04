@@ -12,7 +12,7 @@ const channels = [
 
 export function Contact() {
   return (
-    <section id="contact" className="scroll-mt-28 px-4 py-8 sm:px-6">
+    <section id="contact" className="scroll-mt-28 px-4 py-6 sm:px-6">
       <Reveal className="mx-auto max-w-[1140px]">
         <Panel className="relative overflow-hidden">
           <span
@@ -20,7 +20,7 @@ export function Contact() {
             className="pointer-events-none absolute -start-20 -top-20 size-72 rounded-full bg-brand/15 blur-3xl"
           />
 
-          <div className="grid gap-9 lg:grid-cols-[1fr_0.9fr] lg:gap-12">
+          <div className="grid gap-7 lg:grid-cols-[1fr_0.9fr] lg:gap-10">
             <div>
               <p className="inline-flex items-center gap-2 rounded-full bg-success/12 px-3 py-1.5 text-[0.75rem] font-semibold text-success">
                 <span aria-hidden className="size-2 rounded-full bg-success animate-pulse-ring" />

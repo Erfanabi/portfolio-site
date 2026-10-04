@@ -7,26 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// مقاله‌های بلاگ
-model Post {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  title       String
-  excerpt     String
-  content     String
-  coverImage  String?
-  readMinutes Int      @default(5)
-  published   Boolean  @default(false)
-  featured    Boolean  @default(false)
-  views       Int      @default(0)
-  tags        String   @default("")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  publishedAt DateTime?
-
-  @@index([published, publishedAt])
-}
-
 /// نمونه‌کارها
 model Project {
   id          String   @id @default(cuid())
