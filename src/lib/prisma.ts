@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 
-/* در حالت توسعه، Next ماژول‌ها را دوباره بارگذاری می‌کند؛
-   نگه‌داشتن نمونه روی globalThis از ساخت اتصال‌های تکراری جلوگیری می‌کند. */
+/* روی سرورلس هر lambda که warm می‌شود ماژول را دوباره ارزیابی می‌کند؛
+   نگه‌داشتن نمونه روی globalThis — در توسعه و در production — از ساخت
+   اتصال‌های تکراری و رسیدن به سقف اتصال دیتابیس جلوگیری می‌کند. */
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
 export const prisma =
@@ -10,4 +11,4 @@ export const prisma =
     log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error'],
   });
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+globalForPrisma.prisma = prisma;
