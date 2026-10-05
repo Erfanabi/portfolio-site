@@ -14,11 +14,53 @@ export const site = {
   location: 'مشهد، ایران',
   github: 'https://github.com/Erfanabi',
   linkedin: 'https://linkedin.com/in/erfansharafi',
+  /* واتس‌اپ از همان شمارهٔ بالا ساخته می‌شود (بدون + و بدون فاصله) */
+  whatsapp: 'https://wa.me/989105003119',
+  /* نام کاربری تلگرام، بدون @ — خالی باشد در سایت نمایش داده نمی‌شود */
+  telegram: 'sharafierfan',
   resume: '/assets/Erfan_Sharafi_Resume.pdf',
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://erfansharafi.ir',
   description:
     'عرفان شرفی — مهندس فرانت‌اند و سازندهٔ سیستم‌های عملیاتی کسب‌وکار. وب‌اپلیکیشن با React و Next.js، و اتوماسیون فرآیندها با n8n.',
 } as const;
+
+/* راه‌های ارتباطی — در بخش تماس و پانوشت از همین لیست استفاده می‌شود */
+export const contactChannels = [
+  { icon: '✉', label: 'ایمیل', value: site.email, href: `mailto:${site.email}`, short: 'ایمیل' },
+  { icon: '☎', label: 'تلفن', value: site.phoneLabel, href: `tel:${site.phone}`, short: 'تلفن' },
+  {
+    icon: '✆',
+    label: 'واتس‌اپ',
+    value: site.phoneLabel,
+    href: site.whatsapp,
+    short: 'واتس‌اپ',
+  },
+  ...(site.telegram
+    ? [
+        {
+          icon: '➤',
+          label: 'تلگرام',
+          value: `@${site.telegram}`,
+          href: `https://t.me/${site.telegram}`,
+          short: 'تلگرام',
+        },
+      ]
+    : []),
+  {
+    icon: '⌁',
+    label: 'گیت‌هاب',
+    value: 'github.com/Erfanabi',
+    href: site.github,
+    short: 'گیت‌هاب',
+  },
+  {
+    icon: 'in',
+    label: 'لینکدین',
+    value: 'linkedin.com/in/erfansharafi',
+    href: site.linkedin,
+    short: 'لینکدین',
+  },
+] as const;
 
 export const navLinks = [
   { href: '/', label: 'خانه' },

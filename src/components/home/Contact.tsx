@@ -1,14 +1,7 @@
-import { site } from '@/lib/site';
+import { contactChannels, site } from '@/lib/site';
 import { Panel, SectionTitle } from '@/components/ui';
 import { Reveal } from '@/components/Reveal';
 import { ContactForm } from '@/components/home/ContactForm';
-
-const channels = [
-  { icon: '✉', label: 'ایمیل', value: site.email, href: `mailto:${site.email}` },
-  { icon: '☎', label: 'تلفن', value: site.phoneLabel, href: `tel:${site.phone}` },
-  { icon: '⌁', label: 'گیت‌هاب', value: 'github.com/Erfanabi', href: site.github },
-  { icon: 'in', label: 'لینکدین', value: 'linkedin.com/in/erfansharafi', href: site.linkedin },
-];
 
 export function Contact() {
   return (
@@ -36,11 +29,12 @@ export function Contact() {
               <p className="mt-4 max-w-md text-[0.95rem] leading-8 text-ink-2">
                 ایده‌تان را برایم بفرستید؛ معمولاً{' '}
                 <strong className="font-bold text-ink">کمتر از ۲۴ ساعت</strong> پاسخ می‌دهم. مشاورهٔ
-                اولیه هم رایگان است.
+                اولیه هم رایگان است. از هر کدام از راه‌های زیر راحت بودید پیام بدهید — ایمیل، تلفن،
+                واتس‌اپ یا تلگرام.
               </p>
 
               <ul className="mt-7 flex flex-col gap-2">
-                {channels.map((c) => (
+                {contactChannels.map((c) => (
                   <li key={c.label}>
                     <a
                       href={c.href}

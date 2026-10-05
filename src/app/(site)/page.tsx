@@ -7,11 +7,9 @@ import { ProjectCard } from '@/components/ProjectCard';
 import { getFeaturedProjects } from '@/lib/queries';
 import { site } from '@/lib/site';
 
-/* صفحهٔ اصلی هر ساعت بازسازی می‌شود، پس نمونه‌کار تازه خودش ظاهر می‌شود */
-export const revalidate = 3600;
-
-export default async function HomePage() {
-  const projects = await getFeaturedProjects(6);
+/* داده‌ها استاتیک‌اند، پس صفحه در زمان بیلد یک‌بار ساخته می‌شود */
+export default function HomePage() {
+  const projects = getFeaturedProjects(6);
 
   /* داده‌های ساخت‌یافته برای گوگل */
   const personJsonLd = {
@@ -20,9 +18,10 @@ export default async function HomePage() {
     name: site.name,
     jobTitle: site.role,
     email: site.email,
+    telephone: site.phone,
     url: site.url,
     address: { '@type': 'PostalAddress', addressLocality: 'مشهد', addressCountry: 'IR' },
-    sameAs: [site.github, site.linkedin],
+    sameAs: [site.github, site.linkedin].filter(Boolean),
   };
 
   return (

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { navLinks, site } from '@/lib/site';
+import { contactChannels, navLinks, site } from '@/lib/site';
 import { faNum } from '@/lib/utils';
 
 const year = faNum(
@@ -50,42 +50,23 @@ export function SiteFooter() {
           <div>
             <h2 className="mb-3 text-xs font-bold text-ink">تماس</h2>
             <ul className="flex flex-col gap-2 text-sm text-muted">
-              <li>
-                <a
-                  href={`mailto:${site.email}`}
-                  dir="ltr"
-                  className="transition-colors hover:text-brand"
-                >
-                  {site.email}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`tel:${site.phone}`}
-                  dir="ltr"
-                  className="transition-colors hover:text-brand"
-                >
-                  {site.phoneLabel}
-                </a>
-              </li>
-              <li className="flex gap-3 pt-1">
-                <a
-                  href={site.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="transition-colors hover:text-brand"
-                >
-                  گیت‌هاب
-                </a>
-                <a
-                  href={site.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="transition-colors hover:text-brand"
-                >
-                  لینکدین
-                </a>
-              </li>
+              {contactChannels.map((c) => (
+                <li key={c.label}>
+                  <a
+                    href={c.href}
+                    dir={c.href.startsWith('http') ? undefined : 'ltr'}
+                    {...(c.href.startsWith('http')
+                      ? { target: '_blank', rel: 'noopener noreferrer' }
+                      : {})}
+                    className="transition-colors hover:text-brand"
+                  >
+                    {c.href.startsWith('mailto:') || c.href.startsWith('tel:')
+                      ? c.value
+                      : `${c.short} — ${c.value}`}
+                  </a>
+                </li>
+              ))}
+              <li className="pt-1">{site.location}</li>
             </ul>
           </div>
         </div>

@@ -1,27 +1,26 @@
-import { prisma } from '@/lib/prisma';
+import { projects, type Project } from '@/lib/projects';
 
 /* ==========================================================================
-   خواندن داده‌ها — در Server Component‌ها مستقیم صدا زده می‌شود
+   خواندن نمونه‌کارها — همه از دادهٔ استاتیک، بدون دیتابیس و بدون درخواست شبکه
    ========================================================================== */
 
-export async function getPublishedProjects({ category }: { category?: string } = {}) {
-  return prisma.project.findMany({
-    where: {
-      published: true,
-      ...(category && category !== 'all' ? { category } : {}),
-    },
-    orderBy: [{ featured: 'desc' }, { order: 'asc' }, { createdAt: 'desc' }],
-  });
+/* ترتیب نمایش: منتخب‌ها اول، بعد بر اساس order */
+function byDisplayOrder(a: Project, b: Project): number {
+  if (!!b.featured !== !!a.featured) return Number(!!b.featured) - Number(!!a.featured);
+  return (a.order ?? 0) - (b.order ?? 0);
 }
 
-export async function getProjectBySlug(slug: string) {
-  return prisma.project.findFirst({ where: { slug, published: true } });
+export function getPublishedProjects({ category }: { category?: string } = {}): Project[] {
+  return projects
+    .filter((p) => p.published !== false)
+    .filter((p) => !category || category === 'all' || p.category === category)
+    .sort(byDisplayOrder);
 }
 
-export async function getFeaturedProjects(take = 3) {
-  return prisma.project.findMany({
-    where: { published: true },
-    orderBy: [{ featured: 'desc' }, { order: 'asc' }, { createdAt: 'desc' }],
-    take,
-  });
+export function getProjectBySlug(slug: string): Project | undefined {
+  return getPublishedProjects().find((p) => p.slug === slug);
+}
+
+export function getFeaturedProjects(take = 3): Project[] {
+  return getPublishedProjects().slice(0, take);
 }

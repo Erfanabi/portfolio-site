@@ -1,20 +1,74 @@
 'use client';
 
-import { useId, useRef, useState } from 'react';
-import { contactTopics } from '@/lib/site';
-import { contactSchema } from '@/lib/validation';
+import { useId, useState } from 'react';
+import { contactTopics, site } from '@/lib/site';
+import { contactSchema, type ContactInput } from '@/lib/validation';
 import { Button } from '@/components/ui';
 import { cx } from '@/lib/utils';
 
-type Status = 'idle' | 'sending' | 'sent' | 'error';
+/* ==========================================================================
+   فرم تماس — بدون بک‌اند
+   --------------------------------------------------------------------------
+   هیچ سروری پشت این فرم نیست. فرم فقط ورودی را اعتبارسنجی می‌کند و بعد
+   همان متن را در ایمیل، واتس‌اپ یا تلگرام کاربر آماده می‌کند تا پیام
+   مستقیم به خودم برسد. اگر هیچ‌کدام باز نشد، دکمهٔ «رونوشت متن پیام»
+   همان متن را در کلیپ‌بورد می‌گذارد.
+
+   نکته: تلگرام برخلاف واتس‌اپ اجازهٔ پر کردن متن گفت‌وگوی خصوصی از روی
+   لینک را نمی‌دهد، پس متن رونوشت می‌شود و گفت‌وگو باز می‌شود تا کاربر
+   فقط جای‌گذاری کند.
+   ========================================================================== */
+
+type Status = 'idle' | 'error' | 'ready' | 'copied';
 
 const field =
   'w-full rounded-[var(--radius-sm)] border border-line-2 bg-field px-3.5 py-3 text-sm text-ink placeholder:text-muted/80 transition-colors focus:border-brand';
 
+/* رونوشت متن؛ اگر Clipboard API در دسترس نبود، راه قدیمی امتحان می‌شود */
+async function copyText(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    /* مرورگرهای قدیمی‌تر یا زمینهٔ غیرامن — انتخاب دستی متن */
+    try {
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(area);
+      return ok;
+    } catch {
+      return false;
+    }
+  }
+}
+
+/** متن یکدستِ پیام — هم برای ایمیل و هم برای واتس‌اپ */
+function composeMessage(data: ContactInput): { subject: string; body: string } {
+  const subject = `درخواست پروژه — ${data.topic} — ${data.name}`;
+  const body = [
+    `نام: ${data.name}`,
+    `ایمیل: ${data.email}`,
+    ...(data.phone ? [`تلفن: ${data.phone}`] : []),
+    `موضوع: ${data.topic}`,
+    '',
+    'توضیح پروژه:',
+    data.message,
+  ].join('\n');
+
+  return { subject, body };
+}
+
 export function ContactForm() {
-  const formRef = useRef<HTMLFormElement>(null);
   const [status, setStatus] = useState<Status>('idle');
   const [note, setNote] = useState('');
+  /* متن آمادهٔ پیام، وقتی رونوشت ممکن نشد و کاربر باید خودش انتخابش کند */
+  const [fallbackText, setFallbackText] = useState('');
   const uid = useId();
 
   const ids = {
@@ -25,54 +79,120 @@ export function ContactForm() {
     message: `${uid}-message`,
   };
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
+  /** ورودی را می‌خواند و اعتبارسنجی می‌کند؛ در صورت خطا null برمی‌گرداند */
+  function validate(form: HTMLFormElement): ContactInput | null {
     const data = Object.fromEntries(new FormData(form).entries());
-
-    /* همان اعتبارسنجیِ سرور، این‌بار پیش از ارسال */
     const parsed = contactSchema.safeParse(data);
+
     if (!parsed.success) {
       setStatus('error');
       setNote(parsed.error.issues[0]?.message ?? 'ورودی نامعتبر است.');
-      return;
+      return null;
     }
 
-    setStatus('sending');
-    setNote('در حال ارسال…');
+    return parsed.data;
+  }
 
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(parsed.data),
-      });
+  /* ارسال فرم = باز کردن برنامهٔ ایمیل با متن آمادهٔ پیام */
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const data = validate(e.currentTarget);
+    if (!data) return;
 
-      const body = (await res.json().catch(() => ({}))) as { error?: string };
+    const { subject, body } = composeMessage(data);
+    window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
 
-      if (!res.ok) {
-        setStatus('error');
-        setNote(body.error ?? 'ارسال پیام ممکن نشد. از راه ایمیل در تماس باشید.');
-        return;
-      }
+    setFallbackText('');
+    setStatus('ready');
+    setNote(
+      'برنامهٔ ایمیل‌تان با متن آمادهٔ پیام باز می‌شود؛ فقط «ارسال» را بزنید. اگر باز نشد، از واتس‌اپ یا رونوشت متن استفاده کنید.'
+    );
+  }
 
-      form.reset();
-      setStatus('sent');
-      setNote('پیام شما رسید. معمولاً کمتر از ۲۴ ساعت پاسخ می‌دهم.');
-    } catch {
+  /* واتس‌اپ: همان متن، این‌بار در گفت‌وگوی واتس‌اپ من */
+  function onWhatsApp(e: React.MouseEvent<HTMLButtonElement>) {
+    const form = e.currentTarget.form;
+    if (!form) return;
+
+    const data = validate(form);
+    if (!data) return;
+
+    const { subject, body } = composeMessage(data);
+    window.open(
+      `${site.whatsapp}?text=${encodeURIComponent(`${subject}\n\n${body}`)}`,
+      '_blank',
+      'noopener,noreferrer'
+    );
+
+    setFallbackText('');
+    setStatus('ready');
+    setNote('واتس‌اپ با متن آمادهٔ پیام باز می‌شود؛ فقط «ارسال» را بزنید.');
+  }
+
+  /* تلگرام: متن رونوشت می‌شود و گفت‌وگوی من باز می‌شود تا جای‌گذاری شود */
+  async function onTelegram(e: React.MouseEvent<HTMLButtonElement>) {
+    const form = e.currentTarget.form;
+    if (!form) return;
+
+    const data = validate(form);
+    if (!data) return;
+
+    const { subject, body } = composeMessage(data);
+    const text = `${subject}\n\n${body}`;
+    const copied = await copyText(text);
+
+    window.open(`https://t.me/${site.telegram}`, '_blank', 'noopener,noreferrer');
+
+    if (copied) {
+      setFallbackText('');
+      setStatus('ready');
+      setNote('متن پیام رونوشت شد و تلگرام باز می‌شود؛ فقط جای‌گذاری و ارسال کنید.');
+    } else {
+      setFallbackText(text);
       setStatus('error');
-      setNote('اتصال به سرور برقرار نشد. اینترنت را بررسی کنید یا ایمیل بزنید.');
+      setNote('تلگرام باز می‌شود. رونوشت خودکار ممکن نشد — متن زیر را انتخاب و در تلگرام بفرستید.');
+    }
+  }
+
+  /* راه آخر: متن در کلیپ‌بورد تا کاربر هرجا خواست بفرستد */
+  async function onCopy(e: React.MouseEvent<HTMLButtonElement>) {
+    const form = e.currentTarget.form;
+    if (!form) return;
+
+    const data = validate(form);
+    if (!data) return;
+
+    const { subject, body } = composeMessage(data);
+
+    const text = `${subject}\n\n${body}`;
+
+    if (await copyText(text)) {
+      setFallbackText('');
+      setStatus('copied');
+      setNote(`متن پیام رونوشت شد. آن را به ${site.email} بفرستید.`);
+    } else {
+      /* رونوشت خودکار مجاز نبود — متن را نشان می‌دهیم تا دستی انتخاب شود */
+      setFallbackText(text);
+      setStatus('error');
+      setNote(`رونوشت خودکار ممکن نشد. متن زیر را انتخاب و به ${site.email} بفرستید.`);
     }
   }
 
   return (
     <form
-      ref={formRef}
       onSubmit={onSubmit}
       noValidate
       className="glass-soft flex flex-col gap-3.5 rounded-[var(--radius-md)] p-5 sm:p-6"
     >
-      <h3 className="text-[1rem] font-bold text-ink">فرم تماس سریع</h3>
+      <div>
+        <h3 className="text-[1rem] font-bold text-ink">فرم تماس سریع</h3>
+        <p className="mt-1.5 text-[0.78rem] leading-6 text-muted">
+          فرم را پر کنید؛ پیام با متن آماده در ایمیل، واتس‌اپ یا تلگرام خودتان باز می‌شود و مستقیم
+          به من می‌رسد.
+        </p>
+      </div>
 
       <div className="grid gap-3.5 sm:grid-cols-2">
         <div>
@@ -162,31 +282,28 @@ export function ContactForm() {
         />
       </div>
 
-      {/* تلهٔ ربات‌های اسپم — از دید کاربر و صفحه‌خوان پنهان است */}
-      <input
-        type="text"
-        name="website"
-        tabIndex={-1}
-        autoComplete="off"
-        aria-hidden
-        className="pointer-events-none absolute -left-[9999px] size-0 opacity-0"
-      />
-
-      <Button type="submit" size="lg" disabled={status === 'sending'} className="mt-1 w-full">
-        {status === 'sending' ? (
-          <>
-            <span
-              aria-hidden
-              className="size-4 animate-spin rounded-full border-2 border-white/40 border-t-white"
-            />
-            در حال ارسال…
-          </>
-        ) : (
-          <>
-            ارسال پیام <span aria-hidden className="rtl:-scale-x-100">➤</span>
-          </>
-        )}
+      <Button type="submit" size="lg" className="mt-1 w-full">
+        ارسال با ایمیل <span aria-hidden className="rtl:-scale-x-100">➤</span>
       </Button>
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        <Button type="button" variant="light" onClick={onWhatsApp} className="w-full">
+          ارسال با واتس‌اپ <span aria-hidden>✆</span>
+        </Button>
+        {site.telegram && (
+          <Button type="button" variant="light" onClick={onTelegram} className="w-full">
+            ارسال با تلگرام <span aria-hidden className="rtl:-scale-x-100">➤</span>
+          </Button>
+        )}
+        <Button
+          type="button"
+          variant="light"
+          onClick={onCopy}
+          className="w-full sm:col-span-2"
+        >
+          رونوشت متن پیام <span aria-hidden>⧉</span>
+        </Button>
+      </div>
 
       {/* aria-live تا صفحه‌خوان نتیجه را اعلام کند */}
       <p
@@ -195,12 +312,23 @@ export function ContactForm() {
         className={cx(
           'min-h-5 text-[0.8rem] leading-6',
           status === 'error' && 'text-danger',
-          status === 'sent' && 'text-success',
-          (status === 'idle' || status === 'sending') && 'text-muted'
+          (status === 'ready' || status === 'copied') && 'text-success',
+          status === 'idle' && 'text-muted'
         )}
       >
         {note}
       </p>
+
+      {fallbackText && (
+        <textarea
+          readOnly
+          rows={8}
+          value={fallbackText}
+          aria-label="متن آمادهٔ پیام برای رونوشت دستی"
+          onFocus={(e) => e.currentTarget.select()}
+          className={cx(field, 'resize-y font-mono text-[0.75rem] leading-6')}
+        />
+      )}
     </form>
   );
 }
